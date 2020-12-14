@@ -19,9 +19,9 @@ export type DbConnectType = Sequelize;
 
 export type MongoDbConnectType = Db;
 
-export type DbType = "postgres" | "sqlite" | "mysql" | "mariadb" | "mssql" | undefined;
+export type DbType = "postgres" | "sqlite" | "mysql" | "mariadb" | "mssql";
 
-export interface DbOptionType {
+export interface DbConfigType {
     host?: string;
     username?: string;
     password?: string;
@@ -29,21 +29,20 @@ export interface DbOptionType {
     filename?: string;
     location?: string;
     port?: number | string;
-    dbType?: DbType;
     poolSize?: number;
     secureOption?: DbSecureType;
     uri?: string;
 }
 
-export interface DbConfigType {
-    [key: string]: DbOptionType;
+export interface DbConfigsType {
+    [key: string]: DbConfigType;
 }
 
 export interface DbConnectOptions {
     [key: string]: string | number | object | boolean;
 }
 
-export interface MongoDbOptions {
+export interface MongoDbOptionsType {
     checkAccess?: boolean;
     poolSize?: number;
     reconnectTries?: number;
@@ -54,13 +53,13 @@ export interface MongoDbOptions {
 
 export interface DatabaseType {
     dbType: DbType;
-    postgres: DbConfigType;
-    mongodb: DbConfigType;
-    redis: DbConfigType;
-    mysql: DbConfigType;
-    mariadb: DbConfigType;
-    mssql: DbConfigType;
-    sqlite: DbConfigType;
+    postgres: DbConfigsType;
+    mongodb: DbConfigsType;
+    redis: DbConfigsType;
+    mysql: DbConfigsType;
+    mariadb: DbConfigsType;
+    mssql: DbConfigsType;
+    sqlite: DbConfigsType;
 }
 
 export interface RoleServiceType {
@@ -84,7 +83,7 @@ export interface CheckAccessType {
     collId: string;
 }
 
-export interface OkResponse {
+export interface OkResponseType {
     ok: boolean;
 }
 

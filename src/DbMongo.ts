@@ -5,8 +5,8 @@
  * @Description: mc: db connection for mongoDB
  */
 
-import { MongoClient } from 'mongodb';
-import { DbOptionType, DbSecureType, DbConnectOptions, MongoDbOptions } from "./types";
+import { MongoClient } from "mongodb";
+import { DbConfigType, DbSecureType, DbConnectOptions, MongoDbOptionsType } from "./types";
 
 export class DbMongo {
     private readonly host: string;
@@ -19,21 +19,21 @@ export class DbMongo {
     private readonly secureOption: DbSecureType;
     private serverUrl: string;
     private readonly dbUrl: string;
-    private readonly options: MongoDbOptions;
+    private readonly options: MongoDbOptionsType;
     private readonly checkAccess: boolean;
     private readonly user: string;
     private readonly pass: string;
     private mcDb: any;
 
-    constructor(dbConfig: DbOptionType, options?: MongoDbOptions) {
-        this.host = dbConfig?.host || '';
-        this.username = dbConfig?.username || '';
-        this.password = dbConfig?.password || '';
-        this.database = dbConfig?.database || '';
-        this.location = dbConfig?.location || '';
+    constructor(dbConfig: DbConfigType, options?: MongoDbOptionsType) {
+        this.host = dbConfig?.host || "";
+        this.username = dbConfig?.username || "";
+        this.password = dbConfig?.password || "";
+        this.database = dbConfig?.database || "";
+        this.location = dbConfig?.location || "";
         this.port = Number(dbConfig?.port) || Number.NEGATIVE_INFINITY;
         this.poolSize = dbConfig?.poolSize || 20;
-        this.secureOption = dbConfig?.secureOption || {secureAccess: false, secureCert: '', secureKey: ''};
+        this.secureOption = dbConfig?.secureOption || {secureAccess: false, secureCert: "", secureKey: ""};
         this.checkAccess = options?.checkAccess || false;
         this.user = encodeURIComponent(this.username);
         this.pass = encodeURIComponent(this.password);
@@ -54,19 +54,19 @@ export class DbMongo {
         return await this.mgServer();
     }
 
-    async openDb(dbName = '') {
+    async openDb(dbName = "") {
         return await this.mgDb(dbName);
     }
 
     async closeDb() {
         if (this.mcDb) {
-            await this.mcDb.close();
+            await this.mcDb?.close();
         }
     }
 
     async mgServer() {
-        const dbenv = process.env.NODE_ENV || 'development';
-        if (dbenv === 'production' && process.env.MONGODB_URI) {
+        const dbenv = process.env.NODE_ENV || "development";
+        if (dbenv === "production" && process.env.MONGODB_URI) {
             this.serverUrl = process.env.MONGODB_URI;
         }
         try {
@@ -77,16 +77,16 @@ export class DbMongo {
             if (this.mcDb) {
                 await this.mcDb.close();
             }
-            console.error('MongoDB server connection error:' + err.stack);
+            console.error("MongoDB server connection error:" + err.stack);
             return {
-                code   : 'error',
-                message: 'Error connecting to mongoDB server.'
+                code   : "error",
+                message: "Error connecting to mongoDB server."
             }
         }
 
     }
 
-    async mgDb(dbName = '') {
+    async mgDb(dbName = "") {
         let client;
         try {
             // connect to the server (pool connections)
@@ -96,15 +96,15 @@ export class DbMongo {
             if (this.mcDb) {
                 await this.mcDb.close();
             }
-            console.error('MongoDB connection error:' + err.stack);
+            console.error("MongoDB connection error:" + err.stack);
             return {
-                code   : 'error',
-                message: 'Error opening/creating a mongo database handle'
+                code   : "error",
+                message: "Error opening/creating a mongo database handle"
             }
         }
     }
 }
 
-export function newDbMongo(dbConfig: DbOptionType, options?: DbConnectOptions) {
+export function newDbMongo(dbConfig: DbConfigType, options?: DbConnectOptions) {
     return new DbMongo(dbConfig, options);
 }

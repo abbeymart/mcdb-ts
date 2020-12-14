@@ -5,65 +5,66 @@
  * @Description: SQL-DB Connection test cases
  */
 
-import {mcTest} from "@mconnect/mctest";
-import {newDbConnect} from "../src";
+import { mcTest, assertEquals, postTestResult } from "@mconnect/mctest";
+import {checkDb, DbConfigType} from "../src";
+import { newDbConnect } from "../src";
 
 // test config/data
 
 // test-data: db-configuration settings
 const myDb = {
-    DbType  : "postgres",
-    Host    : "localhost",
-    Username: "postgres",
-    Password: "ab12testing",
-    Port    : 5432,
-    DbName  : "mcdev",
-    Filename: "testdb.db",
-    PoolSize: 20,
-    Url     : "localhost:5432",
-    options: {}
+    host    : "localhost",
+    username: "postgres",
+    password: "ab12testing",
+    port    : 5432,
+    dbName  : "mcdev",
+    filename: "testdb.db",
+    poolSize: 20,
+    secureOptions: {
+        secureAccess: false,
+        secureCert: "",
+        secureKey: "",
+    },
+    uri     : "localhost:5432",
+    options : {},
 };
-
-myDb.options = {}
 
 const sqliteDb = {
-    DbType: "sqlite3",
-    filename: "",
+    filename: "testdb.db",
 };
-sqliteDb.filename = "testdb.db";
 
 (async () => {
-    mctest.McTest(mctest.OptionValue{
-        Name: "should successfully connect to the PostgresDB",
-            TestFunc: func() {
-            dbc, err := myDb.OpenDb()
-            defer myDb.CloseDb()
-            fmt.Println(dbc)
-            fmt.Println("*****************************************")
-            mctest.AssertEquals(err, nil, "response-code should be: nil")
-            //mctest.AssertEquals(t, req.Message, res.Message, "response-message should be: "+res.Message)
+    // pre-testing setup
+    const dbc = newDbConnect(myDb, "postgres");
+    const dbOpen = await dbc?.openDb();
+
+    const dbc2 = newDbConnect(sqliteDb, "sqlite");
+    const dbOpen2 = await dbc?.openDb();
+
+    // perform db-connection testing
+    await mcTest({
+        name    : "should successfully connect to the PostgreSQL DB ",
+        testFunc: async () => {
+            const dbRes = checkDb(dbOpen)
+            assertEquals(dbRes.code, "success", "response-code should be: success")
+            assertEquals(dbRes.message.includes("valid database connection/handler"), true, "response-message should be: true")
         },
-    })
+    });
 
-    mctest.McTest(mctest.OptionValue{
-        Name: "should successfully connect to SQLite3 database",
-            TestFunc: func() {
-            dbc2, err2 := sqliteDb.OpenDb()
-            defer sqliteDb.CloseDb()
-            fmt.Println(dbc2)
-            mctest.AssertEquals(t, err2, nil, "response-code should be: nil")
-            //mctest.AssertEquals(t, req.Message, res.Message, "response-message should be: "+res.Message)
+    await mcTest({
+        name    : "should successfully connect to the SQLite3 DB ",
+        testFunc: async () => {
+            const dbRes = checkDb(dbOpen2)
+            assertEquals(dbRes.code, "success", "response-code should be: success")
+            assertEquals(dbRes.message.includes("valid database connection/handler"), true, "response-message should be: true")
         },
-    })
+    });
 
-//if dbc != nil || err == nil {
-//	myDb.CloseDb()
-//}
-//if dbc2 != nil || err2 == nil {
-//	sqliteDb.CloseDb()
-//}
+    postTestResult()
 
-    mctest.PostTestResult()
+    // close resources / avoid memory leak
+    await dbc?.closeDb();
+    await dbc2?.closeDb();
 })()
 
 
