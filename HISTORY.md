@@ -1,5 +1,10 @@
 # Historical logs
 
+## Version 0.2.2
+
+- Release date: Dec 14, 2020
+- resolved types definition packaging issue
+
 ## Version 0.2.1
 
 - Release date: Dec 14, 2020
