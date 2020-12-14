@@ -1,5 +1,10 @@
 # Historical logs
 
+## Version 0.2.3
+
+- Release date: Dec 14, 2020
+- resolved types link in package.json
+
 ## Version 0.2.2
 
 - Release date: Dec 14, 2020
