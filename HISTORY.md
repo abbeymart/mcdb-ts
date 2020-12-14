@@ -1,5 +1,10 @@
 # Historical logs
 
+## Version 0.2.1
+
+- Release date: Dec 14, 2020
+- added the validator package for sequelize
+
 ## Version 0.2.0
 
 - Release date: Dec 14, 2020
