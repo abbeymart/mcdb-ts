@@ -8,29 +8,24 @@
 
 import { mcTest, assertEquals, postTestResult } from "@mconnect/mctest";
 import { checkDb, newDbMongo } from "../src";
+import { myDbAccess, myDbPa } from "./config/secure/dbConfig";
 
 // test-data: db-configuration settings
-const myDb = {
-    host    : "localhost",
-    username: "abbeymart",
-    password: "ab12testing",
-    port    : 27017,
-    dbName  : "mcdev",
-    filename: "testdb.db",
-    poolSize: 20,
-    url     : "mongodb://localhost:27017",
-    options : {}
-};
 
 (async () => {
-    let dbc = newDbMongo(myDb, {checkAccess: false});
-    let dbOpen = await dbc.openDb("mccentral");
+    // let dbc = newDbMongo(myDbAccess, {checkAccess: true});
+    let dbc = newDbMongo(myDbPa, {checkAccess: true});
+    // let dbc = newDbMongo(myDbAccess, {checkAccess: false});
+    // let dbOpen = await dbc.openDb("mccentral");
+    // let dbOpen = await dbc.openDb("mcaccess");
+    let dbOpen = await dbc.openDb("mcpa");
 
     // perform db-connection testing
     await mcTest({
         name    : "should successfully connect to the Mongo DB ",
         testFunc: async () => {
             const dbRes = checkDb(dbOpen)
+            console.log('db-res: ', dbRes)
             assertEquals(dbRes.code, "success", "response-code should be: success")
             assertEquals(dbRes.message.includes("valid database connection/handler"), true, "response-message should be: true")
         },

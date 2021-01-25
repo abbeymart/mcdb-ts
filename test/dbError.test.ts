@@ -8,7 +8,7 @@
 import { mcTest, assertEquals, postTestResult } from "@mconnect/mctest";
 import {checkDb, DbConfigType} from "../src";
 import { newDbConnect } from "../src";
-import {dbs} from "./config/dbConfig";
+import {dbs} from "./config/secure/dbConfig";
 
 // test-data: db-configuration settings
 const myDb = {

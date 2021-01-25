@@ -1,5 +1,10 @@
 # Historical logs
 
+## Version 0.2.5
+
+- Release date: Jan 25, 2021
+- resolved mongo-db authentication error
+
 ## Version 0.2.4
 
 - Release date: Jan 24, 2021

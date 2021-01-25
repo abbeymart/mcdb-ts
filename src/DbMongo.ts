@@ -18,7 +18,7 @@ export class DbMongo {
     private readonly poolSize: number;
     private readonly secureOption: DbSecureType;
     private serverUrl: string;
-    private readonly dbUrl: string;
+    private dbUrl: string;
     private readonly options: MongoDbOptionsType;
     private readonly checkAccess: boolean;
     private readonly user: string;
@@ -40,6 +40,8 @@ export class DbMongo {
         }
         this.user = encodeURIComponent(this.username);
         this.pass = encodeURIComponent(this.password);
+        // this.user = this.username;
+        // this.pass = this.password;
         this.dbUrl = this.checkAccess ? `mongodb://${this.user}:${this.pass}@${dbConfig.host}:${dbConfig.port}/${dbConfig.database}` :
             `mongodb://${dbConfig.host}:${dbConfig.port}/${dbConfig.database}`;
         this.serverUrl = this.checkAccess ? `mongodb://${this.user}:${this.pass}@${dbConfig.host}:${dbConfig.port}` :
@@ -78,10 +80,10 @@ export class DbMongo {
     async mgServer(): Promise<MongoClient> {
         const dbenv = process.env.NODE_ENV || "development";
         if (dbenv === "production" && process.env.MONGODB_URI) {
-            this.serverUrl = process.env.MONGODB_URI;
+            this.dbUrl = process.env.MONGODB_URI;
         }
         try {
-            const client = new MongoClient(this.serverUrl, this.options);
+            const client = new MongoClient(this.dbUrl, this.options);
             this.mcDb = await client.connect();
             return this.mcDb;
         } catch (err) {
