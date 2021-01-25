@@ -5,8 +5,8 @@
  * @Description: mc: db connection for mongoDB
  */
 
-import { MongoClient } from "mongodb";
-import { DbConfigType, DbSecureType, DbConnectOptions, MongoDbOptionsType } from "./types";
+import { Db, MongoClient } from "mongodb";
+import { DbConfigType, DbSecureType, MongoDbOptionsType } from "./types";
 
 export class DbMongo {
     private readonly host: string;
@@ -34,7 +34,10 @@ export class DbMongo {
         this.port = Number(dbConfig?.port) || Number.NEGATIVE_INFINITY;
         this.poolSize = dbConfig?.poolSize || 20;
         this.secureOption = dbConfig?.secureOption || {secureAccess: false, secureCert: "", secureKey: ""};
-        this.checkAccess = options?.checkAccess || false;
+        this.checkAccess = true;
+        if (options?.checkAccess === false) {
+            this.checkAccess = false;
+        }
         this.user = encodeURIComponent(this.username);
         this.pass = encodeURIComponent(this.password);
         this.dbUrl = this.checkAccess ? `mongodb://${this.user}:${this.pass}@${dbConfig.host}:${dbConfig.port}/${dbConfig.database}` :
@@ -51,11 +54,19 @@ export class DbMongo {
     }
 
     async connectServer() {
-        return await this.mgServer();
+        try {
+            return await this.mgServer();
+        } catch (e) {
+            throw new Error("MongoDB server connection error:" + e.message);
+        }
     }
 
     async openDb(dbName = "") {
-        return await this.mgDb(dbName);
+        try {
+            return await this.mgDb(dbName);
+        } catch (e) {
+            throw new Error("MongoDB opening error:" + e.message);
+        }
     }
 
     async closeDb() {
@@ -64,7 +75,7 @@ export class DbMongo {
         }
     }
 
-    async mgServer() {
+    async mgServer(): Promise<MongoClient> {
         const dbenv = process.env.NODE_ENV || "development";
         if (dbenv === "production" && process.env.MONGODB_URI) {
             this.serverUrl = process.env.MONGODB_URI;
@@ -78,33 +89,27 @@ export class DbMongo {
                 await this.mcDb.close();
             }
             console.error("MongoDB server connection error:" + err.stack);
-            return {
-                code   : "error",
-                message: "Error connecting to mongoDB server."
-            }
+            throw new Error("MongoDB server connection error:" + err.message);
         }
 
     }
 
-    async mgDb(dbName = "") {
-        let client;
+    async mgDb(dbName = ""): Promise<Db> {
+        let client: MongoClient;
         try {
             // connect to the server (pool connections)
             client = await this.mgServer();
-            return await client.db(dbName || this.database);
+            return client.db(dbName || this.database);
         } catch (err) {
             if (this.mcDb) {
                 await this.mcDb.close();
             }
             console.error("MongoDB connection error:" + err.stack);
-            return {
-                code   : "error",
-                message: "Error opening/creating a mongo database handle"
-            }
+            throw new Error("Error opening/creating a mongo database handle | " + err.message);
         }
     }
 }
 
-export function newDbMongo(dbConfig: DbConfigType, options?: DbConnectOptions) {
+export function newDbMongo(dbConfig: DbConfigType, options?: MongoDbOptionsType) {
     return new DbMongo(dbConfig, options);
 }

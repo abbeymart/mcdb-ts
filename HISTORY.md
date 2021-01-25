@@ -1,5 +1,10 @@
 # Historical logs
 
+## Version 0.2.4
+
+- Release date: Jan 24, 2021
+- resolved mongo-db options type and auth errors
+
 ## Version 0.2.3
 
 - Release date: Dec 14, 2020

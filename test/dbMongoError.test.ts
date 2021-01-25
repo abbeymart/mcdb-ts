@@ -7,7 +7,7 @@
 
 import { mcTest, assertEquals, postTestResult } from "@mconnect/mctest";
 import { checkDb, newDbMongo } from "../src";
-import {dbs} from "./config/dbConfig";
+import { dbs } from "./config/dbConfig";
 
 // test-data: db-configuration settings
 const myDb = {
@@ -23,7 +23,7 @@ const myDb = {
 };
 
 (async () => {
-    let dbc = await newDbMongo(dbs.mongodb);
+    let dbc = newDbMongo(dbs.mongodb, {checkAccess: false});
     let dbOpen = await dbc.openDb("mcdev-null");
 
     // perform db-connection testing

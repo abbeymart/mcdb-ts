@@ -23,7 +23,7 @@ const myDb = {
 };
 
 (async () => {
-    let dbc = await newDbMongo(myDb);
+    let dbc = newDbMongo(myDb, {checkAccess: false});
     let dbOpen = await dbc.openDb("mccentral");
 
     // perform db-connection testing

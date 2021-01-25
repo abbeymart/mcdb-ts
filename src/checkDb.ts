@@ -7,8 +7,9 @@
 
 import { DbConnectType, MongoDbConnectType } from "./types";
 import { getResMessage, ResponseMessage } from "@mconnect/mcresponse";
+import { Db } from "mongodb";
 
-export function checkDb(dbConnect: DbConnectType | MongoDbConnectType): ResponseMessage {
+export function checkDb(dbConnect: DbConnectType | Db): ResponseMessage {
     if (dbConnect) {
         return getResMessage("success", {
             message: "valid database connection/handler",
