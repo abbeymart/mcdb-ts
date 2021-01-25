@@ -1,6 +1,6 @@
 {
   "name": "@mconnect/mcdb",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "description": "mConnect Db Connection package for mongoDB | PostgreSQL/SQLite3",
   "main": "lib/cjs/index.js",
   "module": "lib/esm/index.js",
