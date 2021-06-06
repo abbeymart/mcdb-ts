@@ -1,14 +1,18 @@
 # Historical logs
 
+## Version 0.2.6
+- Release date: Jun 06, 2021
+- updated mcresponse package to v0.4.1
+
 ## Version 0.2.5
 
 - Release date: Jan 25, 2021
-- resolved mongo-db authentication error
+- resolved mongo-dBase authentication error
 
 ## Version 0.2.4
 
 - Release date: Jan 24, 2021
-- resolved mongo-db options type and auth errors
+- resolved mongo-dBase options type and auth errors
 
 ## Version 0.2.3
 
