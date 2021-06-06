@@ -1,5 +1,9 @@
 # Historical logs
 
+## Version 0.2.7
+- Release date: Jun 06, 2021
+- updated mcresponse package to v0.4.1
+
 ## Version 0.2.6
 - Release date: Jun 06, 2021
 - updated mcresponse package to v0.4.1
